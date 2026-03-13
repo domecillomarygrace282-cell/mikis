@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mary Grace Domecillo | Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #08050f;
+      --surface: #100b1a;
+      --border: #221540;
+      --accent: #c084fc;
+      --accent-light: #e9d5ff;
+      --accent3: #a855f7;
+      --text: #ede9f7;
+      --muted: #7c6a9a;
+      --nav-h: 70px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Mono', monospace;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* Custom Cursor */
+    #cursor {
+      width: 12px; height: 12px;
+      background: var(--accent);
+      border-radius: 50%;
+      position: fixed; top: 0; left: 0;
+      pointer-events: none;
+      z-index: 9999;
+      transition: transform 0.1s ease;
+      mix-blend-mode: screen;
+    }
+    #cursor-ring {
+      width: 40px; height: 40px;
+      border: 1px solid var(--accent);
+      border-radius: 50%;
+      position: fixed; top: 0; left: 0;
+      pointer-events: none;
+      z-index: 9998;
+      transition: transform 0.15s ease, width 0.2s, height 0.2s, opacity 0.2s, border-color 0.2s;
+      opacity: 0.5;
+    }
+
+    /* Stars */
+    #stars { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+    .star {
+      position: absolute; background: #fff; border-radius: 50%;
+      animation: twinkle var(--dur) ease-in-out infinite alternate;
+      opacity: 0;
+    }
+    @keyframes twinkle {
+      from { opacity: 0; transform: scale(0.5); }
+      to   { opacity: var(--op); transform: scale(1.3); }
+    }
+
+    /* Purple orbs */
+    .orb { position: fixed; border-radius: 50%; pointer-events: none; z-index: 0; filter: blur(80px); }
+    .orb-1 { width: 500px; height: 500px; background: radial-gradient(circle, rgba(168,85,247,0.2) 0%, transparent 70%); top: -120px; right: -100px; animation: orbFloat 8s ease-in-out infinite alternate; }
+    .orb-2 { width: 360px; height: 360px; background: radial-gradient(circle, rgba(192,132,252,0.13) 0%, transparent 70%); bottom: 60px; left: -80px; animation: orbFloat 11s ease-in-out infinite alternate-reverse; }
+    .orb-3 { width: 250px; height: 250px; background: radial-gradient(circle, rgba(240,171,252,0.1) 0%, transparent 70%); top: 50%; left: 38%; animation: orbFloat 13s ease-in-out infinite alternate; }
+    @keyframes orbFloat { from { transform: translateY(0) scale(1); } to { transform: translateY(-40px) scale(1.18); } }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      height: var(--nav-h); z-index: 1000;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 3rem;
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      background: rgba(8,5,15,0.85);
+    }
+    .logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.3rem; color: var(--accent); letter-spacing: -0.5px; }
+    .logo span { color: var(--text); }
+    .logo:hover { animation: glitch 0.4s linear; }
+    @keyframes glitch {
+      0%,100% { text-shadow: none; }
+      25% { text-shadow: -2px 0 #f0abfc, 2px 0 #7c3aed; }
+      75% { text-shadow: 2px 0 #f0abfc, -2px 0 #7c3aed; }
+    }
+
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      font-size: 0.72rem; text-decoration: none; color: var(--muted);
+      letter-spacing: 0.14em; text-transform: uppercase;
+      transition: color 0.2s; position: relative;
+    }
+    .nav-links a::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 1px; background: var(--accent); transition: width 0.3s; }
+    .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+    .nav-links a:hover::after, .nav-links a.active::after { width: 100%; }
+
+    /* SECTIONS */
+    section { min-height: 100vh; padding: calc(var(--nav-h) + 4rem) 3rem 4rem; max-width: 1200px; margin: 0 auto; position: relative; z-index: 1; }
+
+    /* HOME */
+    #home { display: flex; flex-direction: column; justify-content: center; }
+    .home-content { position: relative; z-index: 1; }
+
+    .home-tag {
+      font-size: 0.7rem; letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 1.5rem;
+      opacity: 0; animation: fadeUp 0.6s 0.2s forwards;
+      display: flex; align-items: center; gap: 0.8rem;
+    }
+    .home-tag::before { content: ''; display: inline-block; width: 32px; height: 1px; background: var(--accent); }
+
+    .home-name {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(3rem, 8vw, 7rem);
+      font-weight: 800; line-height: 1; letter-spacing: -2px;
+      margin-bottom: 1.5rem;
+      opacity: 0; animation: fadeUp 0.6s 0.4s forwards;
+    }
+    .home-name .line2 { color: var(--accent); display: block; text-shadow: 0 0 50px rgba(192,132,252,0.45); min-height: 1.1em; }
+
+    .home-desc {
+      max-width: 520px; font-size: 0.88rem; line-height: 1.9; color: var(--muted);
+      margin-bottom: 3rem;
+      opacity: 0; animation: fadeUp 0.6s 0.6s forwards;
+    }
+    .home-desc strong { color: var(--accent-light); }
+
+    .home-btns { display: flex; gap: 1rem; flex-wrap: wrap; opacity: 0; animation: fadeUp 0.6s 0.8s forwards; }
+
+    .btn {
+      padding: 0.85rem 2.2rem; font-family: 'DM Mono', monospace;
+      font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase;
+      text-decoration: none; border: none; cursor: none; transition: all 0.3s; display: inline-block;
+    }
+    .btn-primary { background: linear-gradient(135deg, var(--accent3), var(--accent)); color: #fff; box-shadow: 0 0 22px rgba(168,85,247,0.35); }
+    .btn-primary:hover { transform: translate(-2px, -3px); box-shadow: 0 8px 28px rgba(168,85,247,0.5); }
+    .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border); }
+    .btn-outline:hover { border-color: var(--accent); color: var(--accent); transform: translate(-2px, -3px); box-shadow: 4px 4px 0 var(--border); }
+
+    .home-stats {
+      display: flex; gap: 3rem; margin-top: 5rem; padding-top: 3rem;
+      border-top: 1px solid var(--border);
+      opacity: 0; animation: fadeUp 0.6s 1s forwards;
+    }
+    .stat-num {
+      font-family: 'Syne', sans-serif; font-size: 2.5rem; font-weight: 800;
+      background: linear-gradient(135deg, var(--accent3), var(--accent));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .stat-label { font-size: 0.68rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 0.2rem; }
+
+    /* SECTION HEADERS */
+    .section-label { font-size: 0.68rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.8rem; }
+    .section-title { font-family: 'Syne', sans-serif; font-size: clamp(2rem, 5vw, 3.8rem); font-weight: 800; letter-spacing: -1.5px; margin-bottom: 1rem; }
+    .section-title span { color: var(--accent); text-shadow: 0 0 30px rgba(192,132,252,0.3); }
+    .section-sub { color: var(--muted); font-size: 0.82rem; line-height: 1.8; max-width: 500px; margin-bottom: 4rem; }
+
+    /* PROJECTS */
+    .projects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 1.5rem; }
+
+    .project-card {
+      background: var(--surface); border: 1px solid var(--border);
+      overflow: hidden; transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s; position: relative;
+    }
+    .project-card:hover { transform: translate(-4px, -6px); border-color: var(--accent3); box-shadow: 0 20px 40px rgba(168,85,247,0.18); }
+    .project-card:hover .project-img-overlay { opacity: 1; }
+
+    .project-img-placeholder {
+      width: 100%; height: 200px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3.5rem; position: relative;
+    }
+    .project-img-overlay { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(168,85,247,0.12), rgba(192,132,252,0.06)); opacity: 0; transition: opacity 0.3s; }
+
+    .project-body { padding: 1.5rem; }
+    .project-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.8rem; }
+    .tag { font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.2rem 0.55rem; border: 1px solid var(--border); color: var(--muted); }
+    .tag.accent { border-color: var(--accent3); color: var(--accent); background: rgba(168,85,247,0.08); }
+    .project-title { font-family: 'Syne', sans-serif; font-size: 1.15rem; font-weight: 700; margin-bottom: 0.5rem; letter-spacing: -0.3px; }
+    .project-desc { font-size: 0.78rem; color: var(--muted); line-height: 1.7; margin-bottom: 1.2rem; }
+    .project-links { display: flex; gap: 1rem; }
+    .project-link { font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); text-decoration: none; border-bottom: 1px solid transparent; transition: border-color 0.2s; }
+    .project-link:hover { border-color: var(--accent); }
+
+    /* ABOUT */
+    #about { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: start; }
+
+    .about-text { font-size: 0.83rem; color: var(--muted); line-height: 1.95; margin-bottom: 1.4rem; }
+    .about-text strong { color: var(--accent-light); }
+
+    .skills-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: 2rem; }
+    .skill-item { display: flex; align-items: center; gap: 0.6rem; font-size: 0.75rem; color: var(--muted); }
+    .skill-dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; flex-shrink: 0; box-shadow: 0 0 6px var(--accent); }
+
+    .about-right { padding-top: calc(var(--nav-h) + 4rem); }
+
+    .info-card { background: var(--surface); border: 1px solid var(--border); padding: 2rem; margin-bottom: 1.5rem; position: relative; overflow: hidden; }
+    .info-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--accent3), var(--accent), transparent); }
+    .info-card-title { font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 1.2rem; }
+    .info-row { display: flex; justify-content: space-between; align-items: flex-start; padding: 0.65rem 0; border-bottom: 1px solid var(--border); font-size: 0.78rem; }
+    .info-row:last-child { border-bottom: none; }
+    .info-key { color: var(--muted); flex-shrink: 0; }
+    .info-val { color: var(--text); text-align: right; }
+
+    .hobbies { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.5rem; }
+    .hobby-pill { padding: 0.4rem 0.9rem; border: 1px solid var(--border); font-size: 0.7rem; color: var(--muted); transition: border-color 0.2s, color 0.2s; }
+    .hobby-pill:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* CONTACT */
+    #contact { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: start; }
+
+    .contact-method {
+      display: flex; align-items: center; gap: 1.2rem; padding: 1.2rem;
+      background: var(--surface); border: 1px solid var(--border);
+      margin-bottom: 1rem; text-decoration: none; color: var(--text);
+      transition: all 0.3s; position: relative; overflow: hidden;
+    }
+    .contact-method::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: linear-gradient(180deg, var(--accent3), var(--accent)); transform: scaleY(0); transition: transform 0.3s; }
+    .contact-method:hover { border-color: var(--accent3); transform: translateX(8px); box-shadow: -4px 0 20px rgba(168,85,247,0.12); }
+    .contact-method:hover::before { transform: scaleY(1); }
+
+    .contact-icon { width: 46px; height: 46px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; transition: border-color 0.3s, background 0.3s; }
+    .contact-method:hover .contact-icon { border-color: var(--accent); background: rgba(168,85,247,0.12); }
+    .contact-method-name { font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.3rem; }
+    .contact-method-val { font-size: 0.82rem; }
+
+    /* FORM */
+    .contact-form { background: var(--surface); border: 1px solid var(--border); padding: 2rem; position: relative; overflow: hidden; }
+    .contact-form::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--accent3), var(--accent), transparent); }
+    .form-title { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 1.5rem; letter-spacing: -0.3px; }
+    .form-group { margin-bottom: 1.2rem; }
+    .form-label { display: block; font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.5rem; }
+    .form-input, .form-textarea { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--text); font-family: 'DM Mono', monospace; font-size: 0.8rem; padding: 0.75rem 1rem; outline: none; transition: border-color 0.2s, box-shadow 0.2s; resize: vertical; }
+    .form-input:focus, .form-textarea:focus { border-color: var(--accent3); box-shadow: 0 0 0 3px rgba(168,85,247,0.1); }
+    .form-textarea { min-height: 120px; }
+    .form-btn { width: 100%; padding: 0.9rem; background: linear-gradient(135deg, var(--accent3), var(--accent)); color: #fff; border: none; font-family: 'DM Mono', monospace; font-size: 0.72rem; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; cursor: none; transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 20px rgba(168,85,247,0.3); }
+    .form-btn:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 8px 30px rgba(168,85,247,0.45); }
+
+    /* FOOTER */
+    footer { border-top: 1px solid var(--border); padding: 2rem 3rem; display: flex; justify-content: space-between; align-items: center; font-size: 0.7rem; color: var(--muted); max-width: 1200px; margin: 0 auto; position: relative; z-index: 1; }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+    .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.65s, transform 0.65s; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+      nav { padding: 0 1.2rem; }
+      .nav-links { gap: 1rem; }
+      .nav-links a { font-size: 0.62rem; }
+      section { padding: calc(var(--nav-h) + 2rem) 1.2rem 2rem; }
+      #about, #contact { grid-template-columns: 1fr; gap: 2rem; }
+      .about-right { padding-top: 0; }
+      .home-stats { flex-wrap: wrap; gap: 2rem; }
+      .projects-grid { grid-template-columns: 1fr; }
+      footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+    }
+
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent3); }
+  </style>
+</head>
+<body>
+
+  <div id="cursor"></div>
+  <div id="cursor-ring"></div>
+  <div id="stars"></div>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
+  <!-- NAV -->
+  <nav>
+    <div class="logo">mary<span>.grace</span></div>
+    <ul class="nav-links">
+      <li><a href="#home"     class="nav-link active">Home</a></li>
+      <li><a href="#projects" class="nav-link">My Projects</a></li>
+      <li><a href="#about"    class="nav-link">About Me</a></li>
+      <li><a href="#contact"  class="nav-link">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- HOME -->
+  <section id="home">
+    <div class="home-content">
+      <p class="home-tag">bscs student &nbsp;·&nbsp; lianga, surigao del sur</p>
+      <h1 class="home-name">
+        Hi, I'm<br>
+        <span class="line2">Mary Grace</span>
+      </h1>
+      <p class="home-desc">
+        A <strong>19-year-old BS Computer Science student</strong> with a burning passion for programming. I love turning ideas into clean, creative digital solutions one line of code at a time.
+      </p>
+      <div class="home-btns">
+        <a href="#projects" class="btn btn-primary">View My Work</a>
+        <a href="#contact"  class="btn btn-outline">Get in Touch</a>
+      </div>
+      <div class="home-stats">
+        <div><div class="stat-num">19</div><div class="stat-label">Years Old</div></div>
+        <div><div class="stat-num">BSCS</div><div class="stat-label">Degree</div></div>
+        <div><div class="stat-num">💜</div><div class="stat-label">Loves Coding</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <p class="section-label reveal">// 02. my projects</p>
+    <h2 class="section-title reveal">Selected <span>Work</span></h2>
+    <p class="section-sub reveal">A collection of projects I've worked on as part of my studies and personal growth as a developer.</p>
+
+    <div class="projects-grid">
+
+      <div class="project-card reveal">
+        <div class="project-img-placeholder" style="background: linear-gradient(135deg, #110820, #221040);">
+          🛒<div class="project-img-overlay"></div>
+        </div>
+        <div class="project-body">
+          <div class="project-tags"><span class="tag accent">HTML</span><span class="tag">CSS</span><span class="tag">JavaScript</span></div>
+          <h3 class="project-title">E-Commerce Website</h3>
+          <p class="project-desc">A fully functional online store with product listings, a shopping cart system, and checkout flow. Built as a final project for Web Development class.</p>
+          <div class="project-links"><a href="#" class="project-link">Live Demo →</a><a href="#" class="project-link">GitHub →</a></div>
+        </div>
+      </div>
+
+      <div class="project-card reveal">
+        <div class="project-img-placeholder" style="background: linear-gradient(135deg, #180a30, #2d1658);">
+          📋<div class="project-img-overlay"></div>
+        </div>
+        <div class="project-body">
+          <div class="project-tags"><span class="tag accent">Python</span><span class="tag">Flask</span><span class="tag">MySQL</span></div>
+          <h3 class="project-title">Student Record System</h3>
+          <p class="project-desc">A database-driven CRUD application for managing student records, grades, and enrollment status for school administration use.</p>
+          <div class="project-links"><a href="#" class="project-link">Live Demo →</a><a href="#" class="project-link">GitHub →</a></div>
+        </div>
+      </div>
+
+      <div class="project-card reveal">
+        <div class="project-img-placeholder" style="background: linear-gradient(135deg, #0f0a28, #1e1545);">
+          🌤️<div class="project-img-overlay"></div>
+        </div>
+        <div class="project-body">
+          <div class="project-tags"><span class="tag accent">JavaScript</span><span class="tag">API</span><span class="tag">CSS</span></div>
+          <h3 class="project-title">Weather App</h3>
+          <p class="project-desc">Real-time weather application using OpenWeatherMap API. Shows temperature, humidity, wind speed, and 5-day forecast with animated icons.</p>
+          <div class="project-links"><a href="#" class="project-link">Live Demo →</a><a href="#" class="project-link">GitHub →</a></div>
+        </div>
+      </div>
+
+      <div class="project-card reveal">
+        <div class="project-img-placeholder" style="background: linear-gradient(135deg, #1a0e30, #33205a);">
+          ✅<div class="project-img-overlay"></div>
+        </div>
+        <div class="project-body">
+          <div class="project-tags"><span class="tag accent">HTML</span><span class="tag">CSS</span><span class="tag">LocalStorage</span></div>
+          <h3 class="project-title">Todo List App</h3>
+          <p class="project-desc">A clean task manager with add, edit, delete, and filter functionality. Data persists via localStorage so tasks survive page refresh.</p>
+          <div class="project-links"><a href="#" class="project-link">Live Demo →</a><a href="#" class="project-link">GitHub →</a></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="about-left">
+      <p class="section-label reveal">// 03. about me</p>
+      <h2 class="section-title reveal">Who Am <span>I?</span></h2>
+
+      <p class="about-text reveal">
+        Hi! I'm <strong>Mary Grace Domecillo</strong>, a <strong>19-year-old BS Computer Science student</strong> from Purok-1, Ganayon, Lianga, Surigao del Sur. I have a deep passion for programming and love exploring how code can solve real-world problems.
+      </p>
+      <p class="about-text reveal">
+        Programming isn't just a subject for me — it's my <strong>creative outlet and greatest passion</strong>. Whether it's building a web app, writing algorithms, or designing interfaces, I approach every project with curiosity and dedication.
+      </p>
+      <p class="about-text reveal">
+        When I'm not coding, I enjoy listening to music, exploring new tech trends, and spending time with my friends and family in our beautiful hometown in Surigao del Sur.
+      </p>
+
+      <div class="skills-grid reveal">
+        <div class="skill-item"><span class="skill-dot"></span> HTML / CSS</div>
+        <div class="skill-item"><span class="skill-dot"></span> JavaScript</div>
+        <div class="skill-item"><span class="skill-dot"></span> Python</div>
+        <div class="skill-item"><span class="skill-dot"></span> Java (OOP)</div>
+        <div class="skill-item"><span class="skill-dot"></span> MySQL</div>
+        <div class="skill-item"><span class="skill-dot"></span> Git & GitHub</div>
+        <div class="skill-item"><span class="skill-dot"></span> C Programming</div>
+        <div class="skill-item"><span class="skill-dot"></span> Problem Solving</div>
+      </div>
+    </div>
+
+    <div class="about-right">
+      <div class="info-card reveal">
+        <div class="info-card-title">// personal info</div>
+        <div class="info-row">
+          <span class="info-key">Full Name</span>
+          <span class="info-val">Mary Grace Domecillo</span>
+        </div>
+        <div class="info-row">
+          <span class="info-key">Age</span>
+          <span class="info-val">19 years old</span>
+        </div>
+        <div class="info-row">
+          <span class="info-key">Address</span>
+          <span class="info-val">Purok-1, Ganayon,<br>Lianga, Surigao del Sur</span>
+        </div>
+        <div class="info-row">
+          <span class="info-key">Course</span>
+          <span class="info-val">BS Computer Science</span>
+        </div>
+        <div class="info-row">
+          <span class="info-key">Passion</span>
+          <span class="info-val">Programming 💜</span>
+        </div>
+        <div class="info-row">
+          <span class="info-key">Status</span>
+          <span class="info-val" style="color: var(--accent);">Open to opportunities</span>
+        </div>
+      </div>
+
+      <div class="info-card reveal">
+        <div class="info-card-title">// hobbies & interests</div>
+        <div class="hobbies">
+          <span class="hobby-pill">💻 Coding</span>
+          <span class="hobby-pill">🎵 Music</span>
+          <span class="hobby-pill">📚 Reading</span>
+          <span class="hobby-pill">🌐 Tech Trends</span>
+          <span class="hobby-pill">🎮 Gaming</span>
+          <span class="hobby-pill">🎌 Anime</span>
+          <span class="hobby-pill">🍜 Food Trip</span>
+          <span class="hobby-pill">🌿 Nature</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div>
+      <p class="section-label reveal">// 04. contact</p>
+      <h2 class="section-title reveal">Let's <span>Connect</span></h2>
+      <p class="section-sub reveal">Feel free to reach out — whether it's about projects, collaboration, or just to say hi! I'd love to hear from you. 💜</p>
+
+      <a href="https://www.facebook.com/share/1Af8z3V1nJ/" target="_blank" class="contact-method reveal">
+        <div class="contact-icon">📘</div>
+        <div>
+          <div class="contact-method-name">Facebook</div>
+          <div class="contact-method-val">Mary Grace Domecillo</div>
+        </div>
+      </a>
+
+      <a href="tel:+639079780301" class="contact-method reveal">
+        <div class="contact-icon">📞</div>
+        <div>
+          <div class="contact-method-name">Phone / Call</div>
+          <div class="contact-method-val">0907 978 0301</div>
+        </div>
+      </a>
+
+      <a href="sms:+639079780301" class="contact-method reveal">
+        <div class="contact-icon">💬</div>
+        <div>
+          <div class="contact-method-name">SMS / Text</div>
+          <div class="contact-method-val">0907 978 0301</div>
+        </div>
+      </a>
+
+      <div class="contact-method reveal" style="pointer-events: none;">
+        <div class="contact-icon">📍</div>
+        <div>
+          <div class="contact-method-name">Location</div>
+          <div class="contact-method-val">Purok-1, Ganayon, Lianga, Surigao del Sur</div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="contact-form reveal">
+        <div class="form-title">Send a Message 💌</div>
+        <div class="form-group">
+          <label class="form-label">Your Name</label>
+          <input type="text" class="form-input" placeholder="e.g. Juan Santos"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input type="email" class="form-input" placeholder="e.g. juan@email.com"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Subject</label>
+          <input type="text" class="form-input" placeholder="e.g. Project Collaboration"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Message</label>
+          <textarea class="form-textarea" placeholder="Type your message here..."></textarea>
+        </div>
+        <button class="form-btn" onclick="sendMessage()">Send Message</button>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div>Designed & Built by <span style="color: var(--accent);">Mary Grace Domecillo</span></div>
+    <div>© 2025 · All rights reserved 💜</div>
+  </footer>
+
+  <script>
+    // Generate starfield
+    const starsEl = document.getElementById('stars');
+    for (let i = 0; i < 130; i++) {
+      const s = document.createElement('div');
+      s.className = 'star';
+      const size = (Math.random() * 2.5 + 0.5).toFixed(1);
+      const dur  = (Math.random() * 4 + 2).toFixed(1) + 's';
+      const op   = (Math.random() * 0.45 + 0.08).toFixed(2);
+      s.style.cssText = `width:${size}px;height:${size}px;top:${Math.random()*100}%;left:${Math.random()*100}%;--dur:${dur};--op:${op};animation-delay:${(Math.random()*5).toFixed(1)}s;`;
+      starsEl.appendChild(s);
+    }
+
+    // Custom cursor
+    const cursor = document.getElementById('cursor');
+    const ring   = document.getElementById('cursor-ring');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      cursor.style.transform = `translate(${mx - 6}px, ${my - 6}px)`;
+    });
+    function animateRing() {
+      rx += (mx - rx - 20) * 0.12;
+      ry += (my - ry - 20) * 0.12;
+      ring.style.transform = `translate(${rx}px, ${ry}px)`;
+      requestAnimationFrame(animateRing);
+    }
+    animateRing();
+
+    document.querySelectorAll('a, button, .project-card, .hobby-pill').forEach(el => {
+      el.addEventListener('mouseenter', () => { ring.style.width = '60px'; ring.style.height = '60px'; ring.style.opacity = '0.9'; ring.style.borderColor = '#a855f7'; });
+      el.addEventListener('mouseleave', () => { ring.style.width = '40px'; ring.style.height = '40px'; ring.style.opacity = '0.5'; ring.style.borderColor = 'var(--accent)'; });
+    });
+
+    // Scroll reveal
+    const reveals  = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) setTimeout(() => entry.target.classList.add('visible'), i * 80);
+      });
+    }, { threshold: 0.1 });
+    reveals.forEach(el => observer.observe(el));
+
+    // Active nav on scroll
+    const sections = document.querySelectorAll('section');
+    const navLinks = document.querySelectorAll('.nav-link');
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(sec => { if (window.scrollY >= sec.offsetTop - 200) current = sec.id; });
+      navLinks.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + current));
+    });
+
+    // Form
+    function sendMessage() {
+      const btn = document.querySelector('.form-btn');
+      btn.textContent = '💜 Message Sent!';
+      btn.style.background = 'linear-gradient(135deg, #6d28d9, #9333ea)';
+      setTimeout(() => {
+        btn.textContent = 'Send Message';
+        btn.style.background = 'linear-gradient(135deg, var(--accent3), var(--accent))';
+      }, 3000);
+    }
+
+    // Typing effect
+    const phrases = ['Mary Grace Domecillo', 'a CS Student', 'a Programmer', 'a Coder 💜'];
+    let ni = 0, ci = 0, isTyping = true;
+    const target = document.querySelector('.line2');
+    setTimeout(() => {
+      setInterval(() => {
+        const cur = phrases[ni];
+        if (isTyping) {
+          target.textContent = cur.slice(0, ++ci);
+          if (ci === cur.length) isTyping = false;
+        } else {
+          target.textContent = cur.slice(0, --ci);
+          if (ci === 0) { ni = (ni + 1) % phrases.length; isTyping = true; }
+        }
+      }, 85);
+    }, 2200);
+  </script>
+</body>
+</html>
